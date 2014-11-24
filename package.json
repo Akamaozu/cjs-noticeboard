@@ -1,0 +1,26 @@
+{
+  "name": "cjs-noticeboard",
+  "version": "0.0.0",
+  "description": "Self-Logging Pubsub with Built-In Cache",
+  "main": "cjs-noticeboard.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Akamaozu/cjs-noticeboard.git"
+  },
+  "keywords": [
+    "pubsub",
+    "browser",
+    "commonjs",
+    "npm",
+    "javascript"
+  ],
+  "author": "akamaozu <uzo@designbymobius.ca>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Akamaozu/cjs-noticeboard/issues"
+  },
+  "homepage": "https://github.com/Akamaozu/cjs-noticeboard"
+}
