@@ -177,7 +177,7 @@
 			function Noticeboard(settings){
 
 				// set default values
-					this.settings = settings || { logging: false };
+					this.settings = settings || { logging: true };
 					this.watchers = [];
 					this.cache = [];
 			}
