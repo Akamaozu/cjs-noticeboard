@@ -65,23 +65,23 @@ Reduce your app's fragility by decoupling pieces and synchronizing complex behav
 		});
 	
 	// render ui components
-		app.watch('serverside-assets', 'react-render', function(data){
+		app.watch('serverside-assets', 'react-render', function(msg){
 		
 			var React, assets;
 
 				React = require('React');
-				assets = data.notification;
+				assets = msg.notice;
 		  
 			// do something with React
 
 			app.notify('ui-components-rendered', ReactComponents.getDOMNode(), 'react-render');
 	
-		}{'useCache': true});
+		}{useCache: true});
 	
 	// failed assets request handler
-		app.watch('assets-ajax-failed', 'retry-assets-ajax', function(data){
+		app.watch('assets-ajax-failed', 'retry-assets-ajax', function(msg){
 			
-			var failed_ajax = data.notification;
+			var failed_ajax = msg.notice;
 
 			// do retry here	
 		});
@@ -95,11 +95,11 @@ THE EASE OF ADDING NEW FEATURES IS TOO DAMN HIGH!
 ---
 
 	// animate rendered ui components
-		app.watch('ui-components-rendered', 'masonry-js', function(data){
+		app.watch('ui-components-rendered', 'masonry-js', function(msg){
 		
 			var Masonry, components;
 				Masonry = require('masonry-js');
-				components = data.notification;
+				components = msg.notice;
 		
 			// animate ui components with Masonry
 		});
@@ -109,13 +109,13 @@ Masonry has no idea you're using React to manage your view. *And it shouldn't*. 
 Let's extend it just a little bit more.
 
 	// log failed assets download
-		app.watch('assets-ajax-failed', 'console-log', function(data){
+		app.watch('assets-ajax-failed', 'console-log', function(msg){
 			
-			var failed_ajax = data.notification;		
+			var failed_ajax = msg.notice;		
 			console.log('failed ajax: ', failed_ajax);
 		});
 
-		app.watch('assets-ajax-failed', 'google-analytics', function(data){
+		app.watch('assets-ajax-failed', 'google-analytics', function(){
 					
 			ga('send', 'event', 'failed-ajax');
 		});
