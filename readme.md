@@ -21,14 +21,17 @@ Wish I could take credit for such a brilliant analogy, but [all attribution goes
 
 ---
 A Noticeboard is yet another variant of the Publisher Subscriber model ... with a twist. **The most-recently data will hang around for future subscribers.**
-=
 ---
 
 Don't let the **simplicity** and **lack-of-magic** fool you though. You can build a lot of **powerful** things very quickly with it.
 
 
-1. MANAGE EVENTS + CALLBACKS
+1. ESCAPE CALLBACK HELL
 ===
+---
+
+Reduce your app's fragility by decoupling pieces and synchronizing complex behavior through a simple event manager.
+---
 	
 	var app, Noticeboard;
 		Noticeboard = require('cjs-noticeboard');
@@ -82,13 +85,14 @@ Don't let the **simplicity** and **lack-of-magic** fool you though. You can buil
 
 			// do retry here	
 		});
-	
+
 Any part of your app can watch `serverside-assets` and use it as needed. Even if it missed the timing of the original request, `useCache: true` will fetch the assets from cache.
 
 2. EASILY EXTEND YOUR APP
 ===
-
-Your app requests `serverside-assets` and retries when it fails. How easy is it to add new behavior to it?
+---
+THE EASE OF ADDING NEW FEATURES IS TOO DAMN HIGH!
+---
 
 	// animate rendered ui components
 		app.watch('ui-components-rendered', 'masonry-js', function(data){
@@ -116,19 +120,35 @@ Let's extend it just a little bit more.
 			ga('send', 'event', 'failed-ajax');
 		});
 
-Failed asset requests are now logged to console as well as sent to your Google Analytics account. Pretty straightforward, sensible extension. 
+Failed asset requests are now logged to console as well as sent to your Google Analytics account. **Pretty straightforward, sensible extensions.** 
 
 3. REAL SOLUTIONS
 ===
+---
 
-I'll be updating this section with links to off-the-shelf tools built with this tool that makes working in the browser really easy. That way you don't have to implement the Noticeboard yourself ... just grab a real solution and drop it in your project. 
+*I'll be updating this section with links to off-the-shelf tools built with this tool that makes working in the browser really easy. That way you don't have to implement the Noticeboard yourself ... just grab a real solution and drop it in your project.*
 
 4. API
 === 
+---
 
 You don't like my Real Solutions??! **T_T**
 
 That's cool. Here's the Noticeboard API. Roll your own. See if I care.
+
+new Noticeboard(settings)
+---
+
+Create a new **Noticeboard** Instance. Behavior can be configured with **settings**.
+
+- **settings**
+	- type: Object `{}`
+	- required: false
+	- props:
+		- **logging**
+			- type: Boolean (`true` or `false`)
+			- required: false
+			- desc: Determines if the Noticeboard will notify subscribers of `log-entry`.
 
 Noticeboard.notify(notice, message, source)
 ---
@@ -162,20 +182,25 @@ Adds a **watcher** to the list of **callbacks** to execute when a **notice** is 
 - **callback**
 	- type: Function	
 	- required: true
-	- arguments passed: Object 
-	- arguments props: `{'notification': null, 'watcher': null}`
+	- arguments passed: Object `{}`
+	- arguments props: 
+		- **notice**
+			- description: **message** passed from `Noticeboard.notify`
+		-  **watcher**
+			-  description: **message** passed from `Noticeboard.watch`
 - **options**
 	- type: Object `{}`
 	- required: false
 	- props:
+		- **message**
+			- type: Any
+			- required: false
+			- description: Passed to callback on execution. accessible inside callback as arguments[0].watcher
 
-.
-	
-	{
-		message: 'passed to callback on execution. accessible inside callback as arguments[0].watcher',
-
-		useCache: 'set to true if its okay to autofire the callback if the notification has been previously cached'
-	}
+		- **useCache**
+			- type: Boolean (`true` or `false`)
+			- required: false
+			- description: Set to true if its okay to autofire the callback if the notification has been previously cached
 
 Noticeboard.ignore(notice, watcher)
 ---
@@ -192,10 +217,25 @@ Noticeboard.once(notice, watcher, callback, options)
 ---
 A simple wrapper around `Noticeboard.watch` that calls `Noticeboard.ignore` as soon as its **callback** is executed. See `Noticeboard.watch` for details this function's parameters.
 
+Noticeboard.log()
+---
+Designed to simulate the browser's `console.log`, this function will **notify** all **watchers** of `log-entry` and pass its arguments object as the **message**. 
 
+For instance, this is equivalent to calling `console.log`, with the added benefit of not crashing if the browser doesn't have console. That and your log can be piped to other parts of your app.
+
+	Noticeboard.watch('log-entry', 'browser-console', function(msg){
+		if(!console || typeof console.log !== "function"){ return; }
+	
+		console.log.apply(console, msg.notice);
+	}
+
+With the above watcher, the snippet below is now a superior version of `console.log`.
+
+	Noticeboard.log("testing", {isTest: true}, [1,2,3], function(){})
 
 5. SHARE YOUR REAL SOLUTIONS
 ===
+---
 
 That thing I said about me not caring? I lied. I'm a carebear <3 
 
