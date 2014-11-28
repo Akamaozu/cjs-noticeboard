@@ -22,7 +22,7 @@
 								|| typeof watcher !== 'string' 
 								|| typeof callback !== 'function'){ return false; }
 						
-							var _self, watcherList, watcherParams, useCache, hasCache, cache;
+							var _self, watcherList, watcherMessage, useCache, hasCache, cache;
 
 							_self = this;
 
@@ -33,21 +33,21 @@
 
 						// get list of watchers to this notice
 							watcherList = _self.watchers[notice];
-							watcherParams = (typeof options.message !== "undefined" ? options.message : null);
+							watcherMessage = (typeof options.message !== "undefined" ? options.message : null);
 							useCache = (options.useCache === true ? true : false);
 							hasCache = ( typeof _self.cache[notice] !== "undefined" ? true : false );
 						
-						// add watcher to the list with function of what they do in callback, with params if needed
+						// add watcher to the list with function of what they do in callback, with message if included
 							watcherList[watcher] = {};
 							watcherList[watcher]['callback'] = callback;
-							watcherList[watcher]['watcherParams'] = watcherParams || null;
+							watcherList[watcher]['watcherMessage'] = watcherMessage || null;
 						
 						// insta-notify if list is instant
 							if(useCache === true && hasCache){
 
 								cache = _self.cache[notice];
 
-								_self._notifyWatcher(watcher, watcherList, {'noticeParams': cache, 'watcherParams': watcherParams});
+								_self._notifyWatcher(watcher, watcherList, {'noticeMessage': cache, 'watcherMessage': watcherMessage});
 								_self.log("\n'" + notice.toUpperCase() + "' - " + "cache-hit\n" + '<- Source: ' + notice +  '-cache \n-> Notified: ' + watcher + "\n" );						
 							}
 
@@ -101,12 +101,12 @@
 						// process queue						
 							for (var watcher in watcherList) {					
 								
-								var params = {};
-								params['noticeParams'] = message || null;
-								params['watcherParams'] = _self.watchers[notice][watcher]['watcherParams'] || null;
+								var msg = {};
+								msg['noticeMessage'] = message || null;
+								msg['watcherMessage'] = _self.watchers[notice][watcher]['watcherMessage'] || null;
 								
 								// inform watcher in a separate thread 
-								_self._notifyWatcher(watcher, watcherList, params);
+								_self._notifyWatcher(watcher, watcherList, msg);
 								
 								// keep track of who has been informed
 								informedWatchers.push(watcher);							
@@ -121,7 +121,7 @@
 						return true;
 					},
 
-				/* watch ONCE */
+				/* watch once */
 				    once: function(notice, watcher, callback, options){
 
 				    	var _self = this; 
@@ -130,19 +130,20 @@
 				            notice, 
 				            watcher,
 
-				            (function(callback, options){
+				            (function(callback){
 							
-								return function(data){
+								return function(msg){
 
-				                	callback({'noticeParams': data.noticeParams, 'watcherParams': options.watcherParams });
+				                	callback(msg);
 				                	_self.ignore(notice, watcher);				                	
 				            	}
-			            	})(callback, options),
+			            	})(callback),
 
 			            	options
 				        );
 				    },
 
+				// log
 				    log: function(){
 
 						var _self = this;
@@ -150,23 +151,24 @@
 						if(_self.settings.logging === true){ _self.notify('log-entry', arguments); }
 					}, 
 
-					_notifyWatcher: function(watcher, watcherList, params){
+				// _notifyWatcher
+					_notifyWatcher: function(watcher, watcherList, message){
 
 						var _self = this;
 
 						// inform watcher in a separate thread 
-							setTimeout( (function(watcherList, watcher, params, _self) { 
+							setTimeout( (function(watcherList, watcher, message, _self) { 
 								return function() {
 
 									if( !watcherList[watcher] || typeof watcherList[watcher]['callback'] !== "function"){
 
-										_self.log("ERROR: ", watcher, watcherList, params);
+										_self.log("ERROR: ", watcher, watcherList, message);
 										return;
 									}
 
-									watcherList[watcher]['callback']({'notice': params.noticeParams, 'watcher': params.watcherParams});
+									watcherList[watcher]['callback']({'notice': message.noticeMessage, 'watcher': message.watcherMessage});
 								} 
-							})(watcherList, watcher, params, _self), 0 );								
+							})(watcherList, watcher, message, _self), 0 );								
 					}
 			}
 
@@ -178,8 +180,8 @@
 
 				// set default values
 					this.settings = settings || { logging: true };
-					this.watchers = [];
-					this.cache = [];
+					this.watchers = {};
+					this.cache = {};
 			}
 
 			Noticeboard.prototype = codec;
