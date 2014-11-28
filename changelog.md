@@ -21,7 +21,7 @@ Overall Upgrade Safety is a 5 Point Rating System to indicate how safe the upgra
 **1/5**: **VERY RISKY!** So many changes I can't even guarantee APIs that shouldn't be affected are safe. I wouldn't even recommend you upgrade unless you know what you are doing, what I am doing and what the meaning of life is. 
 
 ---
-V. 0.0.3
+V. 0.0.2
 ===
 ---
 OVERALL UPGRADE SAFETY: 4/5
