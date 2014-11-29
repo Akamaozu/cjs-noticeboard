@@ -21,13 +21,21 @@
     "url": "https://github.com/Akamaozu/cjs-noticeboard/issues"
   },
   "homepage": "https://github.com/Akamaozu/cjs-noticeboard",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "mocha"
   },
   "devDependencies": {
     "mocha": "^2.0.1"
+  },
+  "testling": {
+    "harness": "mocha-bdd",
+    "files": "test/*.js",
+    "browsers": [
+    "ie/6..10",
+    "firefox/3.5", "firefox/latest",
+    "chrome/latest",
+    "safari/5..latest",
+    "opera/11", "opera/next"
+    ]
   }
 }
