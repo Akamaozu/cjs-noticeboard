@@ -1,6 +1,6 @@
 {
   "name": "cjs-noticeboard",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Self-Logging Pubsub with Built-In Cache",
   "main": "cjs-noticeboard.js",
   "repository": {
@@ -26,16 +26,5 @@
   },
   "devDependencies": {
     "mocha": "^2.0.1"
-  },
-  "testling": {
-    "harness": "mocha-bdd",
-    "files": "test/*.js",
-    "browsers": [
-    "ie/6..10",
-    "firefox/3.5", "firefox/latest",
-    "chrome/latest",
-    "safari/5..latest",
-    "opera/11", "opera/next"
-    ]
   }
 }

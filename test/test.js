@@ -1,197 +1,290 @@
-var assert, Noticeboard, test_board, notice, watcher;
+var assert, Noticeboard, test_board;
 
 assert = require('assert');
 Noticeboard = require('../cjs-noticeboard.js');
 
-test_board = new Noticeboard();
-notice = 'behavior-test';
-watcher = 'assert-behavior';
+describe('Noticeboard Test Suite', function(){
+  
+  describe('About Noticeboard', function(){
+
+    it('is a function', function(){
+
+      assert.equal(typeof Noticeboard, 'function', 'is not a function');
+    });
+
+    describe('Instantiated Noticeboard Properties', function(){
+
+      before(function(){
+
+        test_board = new Noticeboard();
+      });
+
+      it('has its own "settings" object', function(){   
+
+        assert.equal( test_board.hasOwnProperty('settings') && typeof test_board.settings === 'object', true, 'didn\'t instantiate with its own "settings" object');
+      });
+
+      it('has its own "watchers" object', function(){   
+        assert.equal( test_board.hasOwnProperty('watchers') && typeof test_board.watchers === 'object', true, 'didn\'t instantiate with its own "watchers" object');
+      });
+      
+      it('has its own "cache" object', function(){    
+        assert.equal( test_board.hasOwnProperty('cache') && typeof test_board.cache === 'object', true, 'didn\'t instantiate with its own "cache" object');
+      });
 
-describe('Noticeboard', function(){
+      it('has an inherited "watch" function', function(){   
+        assert.equal( test_board.__proto__.hasOwnProperty('watch') && typeof test_board.watch === 'function', true, 'prototype is missing "watch" function');
+      });
 
-	it('is a function', function(){
+      it('has an inherited "ignore" function', function(){    
+        assert.equal( test_board.__proto__.hasOwnProperty('ignore') && typeof test_board.ignore === 'function', true, 'prototype is missing "ignore" function');
+      });
 
-		assert.equal(typeof Noticeboard, 'function', 'is not a function');
-	});
-});
+      it('has an inherited "notify" function', function(){    
+        assert.equal( test_board.__proto__.hasOwnProperty('notify') && typeof test_board.notify === 'function', true, 'prototype is missing "notify" function');
+      });
 
-describe('Instantiated Noticeboard Properties', function(){
+      it('has an inherited "once" function', function(){    
+        assert.equal( test_board.__proto__.hasOwnProperty('once') && typeof test_board.once === 'function', true, 'prototype is missing "once" function');
+      });
 
-	it('has expected properties of its own', function(){		
+      it('has an inherited "log" function', function(){   
+        assert.equal( test_board.__proto__.hasOwnProperty('log') && typeof test_board.log === 'function', true, 'prototype is missing "log" function');
+      });
 
-		assert.equal( test_board.hasOwnProperty('settings') && typeof test_board.settings === 'object', true, 'didn\'t instantiate with its own "settings" object');
-		assert.equal( test_board.hasOwnProperty('watchers') && typeof test_board.watchers === 'object', true, 'didn\'t instantiate with its own "watchers" object');
-		assert.equal( test_board.hasOwnProperty('cache') && typeof test_board.cache === 'object', true, 'didn\'t instantiate with its own "cache" object');
-	});
-});
+      it('has an inherited "_notifyWatcher" function', function(){    
+        assert.equal( test_board.__proto__.hasOwnProperty('_notifyWatcher') && typeof test_board._notifyWatcher === 'function', true, 'prototype is missing "_notifyWatcher" function');
+      });
+    });
+  });
 
-describe('Instantiated Noticeboard Prototype Properties', function(){
+  describe('Noticeboard Functions Behavior', function(){
 
-	it('prototype has expected properties of its own', function(){		
+    beforeEach(function(){
 
-		assert.equal( test_board.__proto__.hasOwnProperty('watch') && typeof test_board.watch === 'function', true, 'prototype is missing "watch" function');
-		assert.equal( test_board.__proto__.hasOwnProperty('ignore') && typeof test_board.ignore === 'function', true, 'prototype is missing "ignore" function');
-		assert.equal( test_board.__proto__.hasOwnProperty('notify') && typeof test_board.notify === 'function', true, 'prototype is missing "notify" function');
-		assert.equal( test_board.__proto__.hasOwnProperty('once') && typeof test_board.once === 'function', true, 'prototype is missing "once" function');
-		assert.equal( test_board.__proto__.hasOwnProperty('log') && typeof test_board.log === 'function', true, 'prototype is missing "log" function');
-		assert.equal( test_board.__proto__.hasOwnProperty('_notifyWatcher') && typeof test_board._notifyWatcher === 'function', true, 'prototype is missing "_notifyWatcher" function');
-	});
-});
+      // drop all watchers
+        for(var watcher in test_board.watchers){
 
-describe('Instantiated Noticeboard Behavior', function(){
+          if( !test_board.watchers.hasOwnProperty(watcher) ){ continue; }
 
-	it('"watch" adds watcher to notice\'s list of watchers', function(){
+          delete test_board.watchers[watcher];
+      }
+    });
 
-		var callback, options, watcher_list, this_watcher, success;
-			
-		callback = function(){ console.log("i am a watcher's callback"); }
-		options = {message: "this is the watcher's message"};
-		success = test_board.watch(notice, watcher, callback, options);
+    it('"watch" adds watcher to notice\'s list of watchers', function(){
 
-		if(!success){ throw new Error("watch function was unsuccessful"); }
-		
-		watcher_list = test_board.watchers[notice];
-		this_watcher = watcher_list[watcher];
+      var notice, watcher, callback, options, 
+          watcher_list, this_watcher, 
+          success;
+      
+          notice = 'watch-adds-correctly';
+          watcher = 'test-suite';
+          callback = function(){ console.log("i am a watcher's callback"); }
+          options = {message: "this is the watcher's message"};
+      
+      success = test_board.watch(notice, watcher, callback, options);
+      
+      if(!success){ throw new Error("watch function was unsuccessful"); }
+      
+      watcher_list = test_board.watchers[notice];
+      this_watcher = watcher_list[watcher];      
 
-		assert.equal( typeof watcher_list !== 'undefined', true, 'list of watchers was not correctly created');
-		assert.equal( typeof this_watcher !== 'undefined', true, 'watcher was not added to list of watchers');
-		assert.equal( this_watcher.callback === callback && this_watcher.watcherMessage === options.message, true, 'watcher was not correctly added to notice\'s list of watchers');
-	});
+      assert.equal( typeof watcher_list !== 'undefined', true, 'list of watchers was not correctly created');
+      assert.equal( typeof this_watcher !== 'undefined', true, 'watcher was not added to list of watchers');
+      assert.equal( this_watcher.callback === callback && this_watcher.watcherMessage === options.message, true, 'watcher was not correctly added to notice\'s list of watchers');
+    });
 
-	it('"notify" triggers a watcher\'s callback', function(done){
+    it('"watch" will not overwrite an existing watcher', function(){
 
-		var message, success, callback_triggered;
-		
-		message = "this is the notice's message";
-		callback_triggered = false;
+      var notice, watcher, callback, options,
+          overwrote_watcher;
+      
+          notice = 'watch-does-not-overwrite';
+          watcher = 'test-suite';
+          callback = function(){ console.log("i am a watcher's callback"); }
+          options = {message: "this is the watcher's message"};
+      
+      test_board.watch(notice, watcher, callback, options);
+      overwrote_watcher = test_board.watch(notice, watcher, callback, options);      
 
-		test_board.watch(notice, watcher, function(msg){ 
+      assert.equal( overwrote_watcher, false, 'previous watcher was overwritten');
+    });
 
-			var mocha_done = msg.watcher;
+    it('"notify" triggers a watcher\'s callback', function(done){
 
-			callback_triggered = true; 
-			mocha_done();
+      var notice, watcher, message, 
+          success, callback_triggered;
+          
+          notice = 'notify-triggers-watcher-callback';
+          watcher = "test-suite";
+          message = "this is the notice's message";
+          callback_triggered = false;
 
-			assert.equal( callback_triggered === true, true, 'watcher\'s callback was not triggered' ); 
-		}, {message: done});
+      test_board.watch(notice, watcher, function(){
 
-		success = test_board.notify(notice, message);
+        callback_triggered = true; 
+        done();
 
-		if(!success){ throw new Error("notify function was unsuccessful"); }
-	});
+        assert.equal( callback_triggered === true, true, 'watcher\'s callback was not triggered' ); 
+      });
 
-	it('"watch" triggers its callback if cache exists and useCache is true', function(done){
+      success = test_board.notify(notice, message);
 
-		var cache_used = false;
+      if(!success){ throw new Error("notify function was unsuccessful"); }
+    });
 
-		test_board.watch(notice, watcher, function(msg){
+    it('"notify" message is automatically cached', function(done){
 
-			var mocha_done = msg.watcher;
+      var notice, watcher;
 
-			cache_used = true;
-			mocha_done();
+          notice = 'notify-message-caches';
+          watcher = 'test-suite';
+          message = 'cached notice message';
 
-			assert.equal(cache_used === true, true, 'watcher did not use cache to trigger callback');		
-		}, {message: done, useCache: true});
-	});
+      test_board.watch(notice, watcher, function(){
 
-	it('"ignore" removes a watcher from a notice\'s watcher list', function(){
+        done();
 
-		var this_watcher, watcher_exists;
+        assert.equal(typeof test_board.cache[notice] !== 'undefined', true, 'notify\'s message was not cached');   
+        assert.equal(test_board.cache[notice] === message, true, 'cached message does not match the original message');   
+      });
 
-		this_watcher = test_board.watchers[notice][watcher];
+      test_board.notify(notice, message);
+    });
 
-		watcher_exists = (typeof this_watcher !== 'undefined');
+    it('"watch" triggers callback if useCache is true and cache exists', function(done){
 
-		if(!watcher_exists){ throw new Error('watcher wasn\'t set up before assertion'); }
+      var notice, watcher, options, 
+          cache_used;
 
-		test_board.ignore(notice, watcher);
+          notice = 'watch-option-useCache-works';
+          watcher = 'test-suite';
+          options = {useCache: true};
+          message = 'cached notice message';
 
-		assert.equal(typeof test_board.watchers[notice][watcher] === "undefined", true, 'watcher hasn\'t been removed from watcher list');
-	});
+          cache_used = false;
 
-	it('"once" ignores a notice after its callback has been fired', function(done){
 
-		// chain of events 
-		// 1. notify once-completed in once's callback
-		// 2. do assertions when notified once-completed
-		
-		test_board.once(notice, watcher, function(msg){
+      test_board.notify(notice, message);
 
-			var mocha_done = msg.watcher;
+      test_board.watch(notice, 'flag-toggler', function(){
 
-			test_board.notify('once-completed', mocha_done);
+        cache_used = true;
+      }, options);
 
-		}, {message: done});
+      test_board.watch(notice, watcher, function(){
 
-		test_board.watch('once-completed', 'do-assertions', function(msg){
+        done();
 
-			var relayed_mocha_done = msg.notice;
+        assert.equal(cache_used === true, true, 'watcher did not use cache to trigger callback');   
+      }, options);
+    });
 
-			relayed_mocha_done();
+    it('"watch" ignores a notice after its callback if once is true ', function(done){
 
-			assert.equal(typeof test_board.watchers[notice][watcher] === "undefined", true, 'watcher hasn\'t been removed from watcher list');
-		});
+      var notice, watcher, message, options;
 
-		test_board.notify(notice);
-	});
+          notice = 'watch-once-autoignores';
+          watcher = 'test-suite';
+          message = 'cached message';
+          options = {once: true};
 
-	it('"once" triggers callback if cache exists and useCache is true', function(done){
+      test_board.watch(notice, watcher, function(){
 
-		var callback_autotriggered = false;
+        test_board.notify('once-completed');
+      }, options);
 
-		test_board.notify(notice, done);
+      test_board.watch('once-completed', watcher, function(msg){
 
-		test_board.once(notice, watcher, function(msg){
+        done();
 
-			var mocha_done = msg.notice;
+        assert.equal(typeof test_board.watchers[notice][watcher] === "undefined", true, 'watcher hasn\'t been removed from watcher list');
+      });
 
-			callback_autotriggered = true;
-			mocha_done();
+      test_board.notify(notice, message);
+    });
 
-			assert.equal(callback_autotriggered === true, true, 'once\'s callback was not triggered');
+    it('"ignore" removes a watcher from a notice\'s watcher list', function(){
 
-		},{useCache: true});
-	});
+      var notice, watcher,
+          watcher_list, watcher_exists;
 
-	it('"log" sends its message to watchers of log-entry', function(done){
+          notice = 'ignore-removes-watcher';
+          watcher = 'test-suite';
 
-		// once should trigger the callback due to autolog
-		test_board.once('log-entry', watcher, function(msg){
+      test_board.watch(notice, watcher, function(){}); // prior test already ensures watch behavior is correct      
+      test_board.ignore(notice, watcher);
 
-			var log_arguments, mocha_done;
+      watcher_list = test_board.watchers[notice];
+      assert.equal(typeof watcher_list[watcher] === "undefined", true, 'watcher hasn\'t been removed from watcher list');
+    });    
 
-			mocha_done = msg.watcher;
-			log_arguments = msg.notice;
+    it('"once" ignores a notice after its callback has been fired', function(done){
 
-			mocha_done();
+      var notice, watcher;
 
-			assert.equal(log_arguments.length > 0, true, 'message received is not the same as log entry');
+          notice = 'once-autoignores-after-callback';
+          watcher = 'test-suite';
+      
+      test_board.once(notice, watcher, function(){
 
-		},{message: done});
-	});
+        if(!test_board.watchers[notice][watcher]){ throw new Error('watcher ignored notice BEFORE callback fired'); }
+        test_board.notify('once-completed');
+      });
 
-	it('"_notifyWatcher" overrides default message and fires watcher\'s callback', function(done){
+      test_board.watch('once-completed', watcher, function(){
 
-		var watcher_msg, notice_msg, mocha_done;
+        done();
 
-		watcher_msg = "untouchable";
-		notice_msg = "_notifyWatcher";
-		mocha_done = done;
+        assert.equal(typeof test_board.watchers[notice][watcher] === "undefined", true, 'watcher hasn\'t been removed from watcher list');
+      });
 
-		test_board.watch(notice, watcher, function(msg){
+      test_board.notify(notice);
+    });
 
-			var received_msg, was_touched;
+    it('"once" triggers callback if useCache is true and cache exists', function(done){
 
-			received_msg = msg.watcher;
-			was_touched = ((watcher_msg !== received_msg) && (msg.notice === notice_msg));
+      var notice, watcher, options,
+          callback_autotriggered;
 
-			mocha_done();
+          notice = 'once-uses-cache';
+          watcher = 'test-suite';
+          message = 'cached message';
+          options = {
 
-			assert.equal(was_touched === true, true, 'message was not touched');
+            useCache: true
+          };
 
-		}, {message: watcher_msg});
+          callback_autotriggered = false;
 
-		test_board._notifyWatcher(watcher, test_board.watchers[notice], {watcherMessage: "touched", noticeMessage: notice_msg});
-	});
+      test_board.watch('test-setup-complete', watcher, function(){
+
+        done();
+        assert.equal(callback_autotriggered === true, true, 'once\'s callback was not triggered');        
+      
+      });
+
+      test_board.notify(notice, message);
+
+      test_board.once(notice, 'flag-toggler', function(){
+
+        callback_autotriggered = true;
+        test_board.notify('test-setup-complete');
+
+      }, options);
+    });
+
+    it('"log" sends its message to watchers of log-entry', function(done){
+
+      // once should trigger the callback due to autolog
+      test_board.once('log-entry', 'test-suite', function(msg){
+
+        var log_arguments = msg.notice;
+
+        done();
+
+        assert.equal(log_arguments.length > 0, true, 'message received is not the same as log entry');
+      });
+    });
+  });
 });

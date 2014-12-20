@@ -21,6 +21,32 @@ Overall Upgrade Safety is a 5 Point Rating System to indicate how safe the upgra
 **1/5**: **VERY RISKY!** So many changes I can't even guarantee APIs that shouldn't be affected are safe. I wouldn't even recommend you upgrade unless you know what you are doing, what I am doing and what the meaning of life is. 
 
 ---
+V. 0.0.3
+===
+---
+OVERALL UPGRADE SAFETY: 3/5
+---
+1. **BUGFIX: `Noticeboard.watch` will prevent you from overwriting an existing subscriber**
+2. **BUGFIX: `Noticeboard.once` ignores notice before triggering callback**
+3. **Added `Noticeboard.watch` option: `once`**
+4. **Rewrote Tests**
+
+**NOTES**
+-
+- **BUGFIX: `Noticeboard.watch` will prevent you from overwriting an existing subscriber**
+	- While technically not a bug in the sense that it was unintended behavior, (was used extensively in the 0.0.2 tests) but the behavior leads to unpredictable behavior of applications and made them harder to debug.
+	- It's very tricky to debug your app when watchers are overwriting each other or forcing others to ignore the notice they just subscribed to. Very buggy, if you ask me.    
+- **BUGFIX: `Noticeboard.once` ignores notice before triggering callback**
+	- The last implementation triggered `ignore` before firing the callback.
+	- Coupled with the overwriting bug from `Noticeboard.watch`, using `Noticeboard.once` multiple times with the same watcher name would result in callbacks going missing and you getting an unhelpful ERROR log message. Nobody cares what the error is as long as they are using the library!
+	- `Noticeboard.once` is now a thin wrapper around `Noticeboard.watch`, as it should be. All it does is set option `once: true` for your `Noticeboard.watch` function. 
+- **Added `Noticeboard.watch` option: `once`**
+	- `Noticeboard.watch(notice, watcher, callback, {once: true})` === `Noticeboard.once(notice, watcher, callback)`
+- **Rewrote Tests**
+	- The previous tests relied on buggy behavior so it needed to be completely rewritten.
+	- Also needed to add coverage for the fixed bugs to prevent regression.    
+
+---
 V. 0.0.2
 ===
 ---
