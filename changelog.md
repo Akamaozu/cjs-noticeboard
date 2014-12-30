@@ -21,19 +21,32 @@ Overall Upgrade Safety is a 5 Point Rating System to indicate how safe the upgra
 **1/5**: **VERY RISKY!** So many changes I can't even guarantee APIs that shouldn't be affected are safe. I wouldn't even recommend you upgrade unless you know what you are doing, what I am doing and what the meaning of life is. 
 
 ---
+V. 0.0.4
+===
+---
+OVERALL UPGRADE SAFETY: 3/5
+---
+1. **`Noticeboard.watch` throws error on attempted overwrite of existing watcher**
+
+**NOTES**
+-
+- **`Noticeboard.watch` throws error on attempted overwrite of existing watcher**
+	- Previously used to return false on attempted watcher overwrite, it now throws an `Error` to prevent silent fails or the need to check the return value of each use of `Noticeboard.watch`.  
+
+---
 V. 0.0.3
 ===
 ---
 OVERALL UPGRADE SAFETY: 3/5
 ---
-1. **BUGFIX: `Noticeboard.watch` will prevent you from overwriting an existing subscriber**
+1. **BUGFIX: `Noticeboard.watch` allows overwriting an existing watcher**
 2. **BUGFIX: `Noticeboard.once` ignores notice before triggering callback**
 3. **Added `Noticeboard.watch` option: `once`**
 4. **Rewrote Tests**
 
 **NOTES**
 -
-- **BUGFIX: `Noticeboard.watch` will prevent you from overwriting an existing subscriber**
+- **BUGFIX: `Noticeboard.watch` allows overwriting an existing watcher**
 	- While technically not a bug in the sense that it was unintended behavior, (was used extensively in the 0.0.2 tests) but the behavior leads to unpredictable behavior of applications and made them harder to debug.
 	- It's very tricky to debug your app when watchers are overwriting each other or forcing others to ignore the notice they just subscribed to. Very buggy, if you ask me.    
 - **BUGFIX: `Noticeboard.once` ignores notice before triggering callback**

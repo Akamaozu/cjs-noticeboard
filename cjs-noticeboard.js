@@ -33,7 +33,7 @@ module.exports = function(){
               once = (options.once === true);
 
           // prevent clobbering existing watcher
-            if(watcherList[watcher]){ return false }
+            if(watcherList[watcher]){ throw new Error('\'' + watcher + '\' has the same name as another watcher for notice \'' + notice.toUpperCase() + '\''); }
           
           // add watcher to the list with function of what they do in callback, with message if included
             watcherList[watcher] = {};
@@ -137,7 +137,7 @@ module.exports = function(){
             var _self = this;
 
             // filter
-              if(!options) options = options = {};
+              if(!options) options = {};
 
             // set once
               options.once = true;

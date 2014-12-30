@@ -202,6 +202,11 @@ Adds a **watcher** to the list of **callbacks** to execute when a **notice** is 
 			- required: false
 			- description: Set to true if its okay to autofire the callback if the notification has been previously cached
 
+		- **once**
+			- type: Boolean (`true` or `false`)
+			- required: false
+			- description: Set to true if you want this watcher to autoignore the notice immediately after its callback. 
+
 Noticeboard.ignore(notice, watcher)
 ---
 Remove a **watcher** from the list of callbacks to execute when this **notice** is sent out.

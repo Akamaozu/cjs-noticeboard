@@ -105,7 +105,17 @@ describe('Noticeboard Test Suite', function(){
           options = {message: "this is the watcher's message"};
       
       test_board.watch(notice, watcher, callback, options);
-      overwrote_watcher = test_board.watch(notice, watcher, callback, options);      
+      
+      try{
+
+        test_board.watch(notice, watcher, callback, options);
+        overwrote_watcher = true;      
+      }
+
+      catch(e){
+
+        overwrote_watcher = false;
+      }
 
       assert.equal( overwrote_watcher, false, 'previous watcher was overwritten');
     });
