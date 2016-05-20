@@ -2,6 +2,7 @@
 CJS-NOTICEBOARD 
 ===============
 ---
+[![Build Status](https://travis-ci.org/Akamaozu/cjs-noticeboard.svg?branch=master)](https://travis-ci.org/Akamaozu/cjs-noticeboard)
 
 WHAT IS A NOTICEBOARD?
 - 
