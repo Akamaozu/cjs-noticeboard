@@ -17,7 +17,7 @@ module.exports = function(){
           // normalize options
             if(!options || typeof options !== 'object'){ options = {}; }
 
-          var _self, watcherList, watcherMessage, useCache, hasCache, once;
+          var _self, watcherList, watcherMessage, useCache, hasCache, isLoggingOps, once;
 
               _self = this;
 
@@ -29,6 +29,8 @@ module.exports = function(){
 
               useCache = (options.useCache === true ? true : false);
               hasCache = (typeof _self.cache[notice] !== "undefined" ? true : false);
+
+              isLoggingOps = _self.settings.logOps;
 
               once = (options.once === true);
 
@@ -56,10 +58,14 @@ module.exports = function(){
               if(once){ notifyWatcherStruct.once = true }
 
               _self._notifyWatcher(watcher, notice, notifyWatcherStruct);
-              _self.log("\n'" + notice.toUpperCase() + "' - " + "cache-hit\n" + '<- Source: ' + notice +  '-cache \n-> Notified: ' + watcher + "\n" );            
+              
+              if( isLoggingOps ) _self.log("\n'" + notice.toUpperCase() + "' - " + "cache-hit\n" + '<- Source: ' + notice +  '-cache \n-> Notified: ' + watcher + "\n" );            
             }
 
-            else { _self.log(' * ' + watcher  + ' started watching "' + notice.toUpperCase() + '"'); }
+            else { 
+
+              if( isLoggingOps ) _self.log(' * ' + watcher  + ' started watching "' + notice.toUpperCase() + '"'); 
+            }
 
           return true;      
         },
@@ -73,9 +79,10 @@ module.exports = function(){
               || typeof watcher !== 'string'){ return false; }
           
           // required vars
-            var _self;
+            var _self, isLoggingOps;
 
             _self = this;
+            isLoggingOps = _self.settings.logOps;
 
           // if the subscription list DNE or watcher isn't on the list, exit
             if( !_self.watchers[notice] || !_self.watchers[notice][watcher] ){ return; }
@@ -84,7 +91,7 @@ module.exports = function(){
             delete _self.watchers[notice][watcher];
           
           // update log
-            _self.log(' * ' + watcher  + ' stopped watching "' + notice.toUpperCase() + '"');
+            if( isLoggingOps ) _self.log(' * ' + watcher  + ' stopped watching "' + notice.toUpperCase() + '"');
 
           return true;        
         },
@@ -96,7 +103,7 @@ module.exports = function(){
             if(!notice || typeof notice !== 'string'){ return false; }
 
           // required vars
-            var _self, watcherList, informedWatchers, hasCache, cache, isLogging;
+            var _self, watcherList, informedWatchers, hasCache, cache, isLogging, isLoggingOps;
 
           // store reference
             _self = this;
@@ -104,7 +111,8 @@ module.exports = function(){
             watcherList = _self.watchers[notice] ? _self.watchers[notice] : createWatcherList();
             informedWatchers = [];
             hasCache = (typeof _self.cache[notice] !== "undefined" ? true : false);
-            isLogging = (notice === "log-entry");
+            isLogNotification = (notice === "log-entry");
+            isLoggingOps = _self.settings.logOps;
           
           // process queue            
             for (var watcher in watcherList) {          
@@ -126,7 +134,7 @@ module.exports = function(){
             if(typeof message !== "undefined"){ _self.cache[notice] = message; }
           
           // update log 
-            if( !isLogging ){ _self.log("\n'" + notice.toUpperCase() + "' - " + "queue\n" + '<- Source: ' + source +  '\n-> Notified: ' + JSON.stringify(informedWatchers) + "\n" ); }
+            if( isLoggingOps && !isLogNotification ){ _self.log("\n'" + notice.toUpperCase() + "'\n" + '<- Source: ' + source +  '\n-> Notified: ' + JSON.stringify(informedWatchers) + "\n" ); }
 
           return true;
         },
@@ -142,7 +150,7 @@ module.exports = function(){
           // set once
             options.once = true;
 
-          _self.watch( notice,  watcher, callback, options );
+          _self.watch( notice, watcher, callback, options );
         },
 
       // log
@@ -158,7 +166,7 @@ module.exports = function(){
 
           var _self = this;
 
-          // inform watcher in a separate thread 
+          // inform watcher asyncronously 
             setTimeout( function(notice, watcher, message, _self) { 
               return function() {
 
@@ -176,8 +184,12 @@ module.exports = function(){
   // Constructor
     function Noticeboard(settings){
 
+      var default_settings = { logging: true, logOps: true };
+
       // set default values
-        this.settings = settings || { logging: true };
+        this.settings = Object.prototype.toString.call( settings ) === '[object Object]' ? 
+                          require('merge-objects')( default_settings, settings ) : 
+                          require('merge-objects')( default_settings, {} );
         this.watchers = {};
         this.cache = {};
     }
