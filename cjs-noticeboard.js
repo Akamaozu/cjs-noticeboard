@@ -132,21 +132,21 @@ module.exports = function(){
         },
 
       /* watch once */
-          once: function(notice, watcher, callback, options){
+        once: function(notice, watcher, callback, options){
 
-            var _self = this;
+          var _self = this;
 
-            // filter
-              if(!options) options = {};
+          // filter
+            if(!options) options = {};
 
-            // set once
-              options.once = true;
+          // set once
+            options.once = true;
 
-            _self.watch( notice,  watcher, callback, options );
-          },
+          _self.watch( notice,  watcher, callback, options );
+        },
 
       // log
-          log: function(){
+        log: function(){
 
           var _self = this;
 
