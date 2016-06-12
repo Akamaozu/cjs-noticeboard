@@ -167,12 +167,17 @@ module.exports = function(){
           var _self = this;
 
           // inform watcher asyncronously 
-            setTimeout( function(notice, watcher, message, _self) { 
+            setTimeout( function(notice, watcher, message, _self) {
+
               return function() {
+
+                if( !_self.watchers[notice] || !_self.watchers[notice][watcher] ) return;
 
                 _self.watchers[notice][watcher]['callback']({'notice': message.noticeMessage, 'watcher': message.watcherMessage});
 
                 if(message.once){ _self.ignore(notice, watcher); }
+
+                if(_self.settings.logOps) _self.log('processed ' + notice + '.' + watcher );
               } 
             }(notice, watcher, message, _self), 0 );                
         }
