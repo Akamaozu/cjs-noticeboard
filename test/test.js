@@ -297,4 +297,80 @@ describe('Noticeboard Test Suite', function(){
       });
     });
   });
+
+  describe('Noticeboard Settings Behavior', function(){
+
+    beforeEach(function(){
+
+      // drop all watchers
+        for(var watcher in test_board.watchers){
+
+          if( !test_board.watchers.hasOwnProperty(watcher) ){ continue; }
+
+          delete test_board.watchers[watcher];
+      }
+    });
+
+    it('"settings.logOps" determines if noticeboard operations send "log-entry" notices', function(done){
+
+      test_board.settings.logOps = false;
+
+      var timeout_fired = false,
+          logged_operation = false;
+
+      // once should trigger the callback due to autolog
+        test_board.once('log-entry', 'test-suite', function(msg){
+
+          logged_operation = true;
+
+          assert.equal(timeout_fired, true, 'noticeboard operation logged before logOps was set to true');
+        });
+
+      // timeout if log operation doesn't fire
+        setTimeout( function(){
+
+          assert.equal(logged_operation, false, 'noticeboard operation was logged when logOps was set to false');
+          
+          timeout_fired = true;
+
+          test_board.settings.logOps = true;
+
+          test_board.once('log-entry', 'end-test', function(){ done() });
+
+        }, 888);
+    });
+
+    it('"settings.logging" determines if noticeboard.log sends "log-entry" notice', function(done){
+
+      test_board.settings.logging = false;
+      test_board.settings.logOps = false;
+
+      var timeout_fired = false,
+          logged = false;
+
+      test_board.once('log-entry', 'test-suite', function(msg){
+
+        logged = true;
+
+        assert.equal(timeout_fired, true, '"log" sent notice while "settings.logging" was false');
+        
+        done();
+      });
+
+      test_board.log('start test');
+
+      // timeout if log operation doesn't fire
+        setTimeout( function(){
+
+          assert.equal(logged, false, '"log" sent notice while "settings.logging" was false');
+          
+          timeout_fired = true;
+
+          test_board.settings.logging = true;
+
+          test_board.log('end test');
+
+        }, 888);
+    });
+  });
 });
