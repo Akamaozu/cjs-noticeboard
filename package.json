@@ -26,5 +26,8 @@
   },
   "devDependencies": {
     "mocha": "^2.0.1"
+  },
+  "dependencies": {
+    "merge-objects": "^1.0.5"
   }
 }
