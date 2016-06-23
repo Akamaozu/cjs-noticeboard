@@ -5,137 +5,128 @@ CJS-NOTICEBOARD
 [![Build Status](https://travis-ci.org/Akamaozu/cjs-noticeboard.svg?branch=master)](https://travis-ci.org/Akamaozu/cjs-noticeboard)
 
 WHAT IS A NOTICEBOARD?
-- 
+=
 
-	The Notice Board pattern: returns the most recent value associated with a key,
-	or blocks waiting for a new value if the current value has already been seen.
+**A Noticeboard is just the Pub-Sub pattern with a twist: most-recently published values are cached and accessible by future subscribers.**
+
+HOW TO USE IT
+=
+
+## Install
+
+```
+	npm install cjs-noticeboard
+```
+
+## Basic Use
+
+### Create New Noticeboard
+
+```js
+
+	var Noticeboard = require('cjs-noticeboard'),
+		board = new Noticeboard();
+```
+
+### Subscribe to Notice
+
+```js
 	
-	History is not stored; only the most recent value is available.
+	var notice = 'new-user',
+		watcher = 'greet-new-users';
+
+	board.watch( notice, watcher, function( message ){
+
+		console.log( "Hello " + message.notice.username + "!" );
+	});
+```
+
+### Publish to Notice Watchers
+
+```js
+
+	board.notify( 'new-user', { username: 'akamaozu' });
+```
+
+### Stop Subscribing to a Notice
+
+```js
 	
-	The physical analogy is a notice board like you might see at a train station:
-	when you arrive at the station you can glance at the board to check the current
-	departure time for your train, or you can stand around watching the board
-	waiting for the inevitable message that your train has been delayed.
+	board.ignore( 'new-user', 'greet-new-users' )
+```
 
+## Advanced Use
 
-Wish I could take credit for such a brilliant analogy, but [all attribution goes to David Wolever](https://gist.github.com/wolever/3dc2d3af7227b6f8f79f).
+### Unsubscribe Immediately After Responding to a Notice
 
----
-A Noticeboard is yet another variant of the Publisher Subscriber model ... with a twist. **The most-recently data will hang around for future subscribers.**
----
-
-Don't let the **simplicity** and **lack-of-magic** fool you though. You can build a lot of **powerful** things very quickly with it.
-
-
-1. ESCAPE CALLBACK HELL
-===
----
-
-Reduce your app's fragility by decoupling pieces and synchronizing complex behavior through a simple event manager.
----
+```js
 	
-	var app, Noticeboard;
-		Noticeboard = require('cjs-noticeboard');
-		app = new Noticeboard();
-		
+	board.once( 'new-user', 'identify-first-user-only', function( message ){
+
+		console.log( "First User: " + message.notice.username );
+	});
+```
+
+### Stop Subscribing Immediately After Responding to a Notice
+
+```js
 	
-	// get serverside assets
-		window.addEventListener('DOMContentLoaded', function(){
-			
-			var ajax = new XMLHttpRequest();
-			
-			ajax.onreadystatechange = function(){
+	board.once( 'new-user', 'identify-first-user-only', function( message ){
 
-                // filter uncompleted responses
-                    if (ajax.readyState !=4){ return; }
+		console.log( "First User: " + message.notice.username );
+	});
+```
 
-                // success
-                    if ( ajax.status > 199 && ajax.status < 400 ){ 
-						
-						app.notify('serverside-assets', ajax.responseText, 'assets-ajax');
-					}
+### Use Previous Notice and Subscribe to Future Notices 
 
-                // fail
-                    else{ 
-						
-						app.notify('assets-ajax-failed', ajax, 'assets-ajax');
-					}                      
-            };
-
-			ajax.send();
-		});
+```js
 	
-	// render ui components
-		app.watch('serverside-assets', 'react-render', function(msg){
-		
-			var React, assets;
+	board.watch( 'window-size', 'log-window-size', function( message ){
 
-				React = require('React');
-				assets = msg.notice;
-		  
-			// do something with React
+		console.log( "w: " + message.notice.width  " | h: " + message.notice.height );
 
-			app.notify('ui-components-rendered', ReactComponents.getDOMNode(), 'react-render');
+	}, { useCache: true });
+```
+
+### Enable Noticeboard Log Feature
+
+```js
+
+	var Noticeboard = require('cjs-noticeboard'),
+		board = new Noticeboard({ logging: true });
+
+	// or
+
+	board.settings.logging = true;
+```
+
+### Enable Noticeboard Internal Operation Logging
+
+**Note:** Noticeboard must have settings `logging` set to `true`
+
+```js
+
+	var Noticeboard = require('cjs-noticeboard'),
+		board = new Noticeboard({ logOps: true });
+
+	// or
+
+	board.settings.logOps = true;
+```
+
+### Track Noticeboard Logs
+
+```js
 	
-		}{useCache: true});
-	
-	// failed assets request handler
-		app.watch('assets-ajax-failed', 'retry-assets-ajax', function(msg){
-			
-			var failed_ajax = msg.notice;
+	board.watch( 'log-entry', 'process-board-logs', function( message ){
 
-			// do retry here	
-		});
+		console.log.apply( console, message.notice );
+	});
+```
 
-Any part of your app can watch `serverside-assets` and use it as needed. Even if it missed the timing of the original request, `useCache: true` will fetch the assets from cache.
-
-2. EASILY EXTEND YOUR APP
-===
----
-THE EASE OF ADDING NEW FEATURES IS TOO DAMN HIGH!
----
-
-	// animate rendered ui components
-		app.watch('ui-components-rendered', 'masonry-js', function(msg){
-		
-			var Masonry, components;
-				Masonry = require('masonry-js');
-				components = msg.notice;
-		
-			// animate ui components with Masonry
-		});
-	
-Masonry has no idea you're using React to manage your view. *And it shouldn't*. It receives the components rendered and works with it seamlessly. 
-
-Let's extend it just a little bit more.
-
-	// log failed assets download
-		app.watch('assets-ajax-failed', 'console-log', function(msg){
-			
-			var failed_ajax = msg.notice;		
-			console.log('failed ajax: ', failed_ajax);
-		});
-
-		app.watch('assets-ajax-failed', 'google-analytics', function(){
-					
-			ga('send', 'event', 'failed-ajax');
-		});
-
-Failed asset requests are now logged to console as well as sent to your Google Analytics account. **Pretty straightforward, sensible extensions.** 
-
-3. REAL SOLUTIONS
-===
----
-
-*I'll be updating this section with links to off-the-shelf tools built with this tool that makes working in the browser really easy. That way you don't have to implement the Noticeboard yourself ... just grab a real solution and drop it in your project.*
-
-4. API
+API
 === 
 ---
-
-You don't like my Real Solutions??! **T_T**
-
-That's cool. Here's the Noticeboard API. Roll your own. See if I care.
 
 new Noticeboard(settings)
 ---
@@ -150,6 +141,10 @@ Create a new **Noticeboard** Instance. Behavior can be configured with **setting
 			- type: Boolean (`true` or `false`)
 			- required: false
 			- desc: Determines if the Noticeboard will notify subscribers of `log-entry`.
+		- **logOps**
+			- type: Boolean (`true` or `false`)
+			- required: false
+			- desc: Determines if the Noticeboard will publish notices about its internal operations to `log-entry` watchers.
 
 Noticeboard.notify(notice, message, source)
 ---
@@ -239,13 +234,11 @@ With the above watcher, the snippet below is now a superior version of `console.
 
 	Noticeboard.log("testing", {isTest: true}, [1,2,3], function(){})
 
-5. SHARE YOUR REAL SOLUTIONS
+
+CONTACT ME
 ===
----
 
-That thing I said about me not caring? I lied. I'm a carebear <3 
-
-Share all the solutions! Let's make building for the browser so much easier and less opinionated than it currently is. **Pull requests**, **emails** (uzo@designbymobius.ca), **tweets** (@akamaozu) and even **carrier pigeons** (good luck with though) accepted. 
+Share all the solutions! Let's make JavaScript so much easier and less opinionated than it currently is. **Pull requests**, **emails** (uzo@designbymobius.ca), **tweets** (@akamaozu) and even **carrier pigeons** (good luck with though) accepted. 
 
 **Hop on the Noticeboard Train!**
 
