@@ -67,16 +67,6 @@ HOW TO USE IT
 	});
 ```
 
-### Stop Subscribing Immediately After Responding to a Notice
-
-```js
-	
-	board.once( 'new-user', 'identify-first-user-only', function( message ){
-
-		console.log( "First User: " + message.notice.username );
-	});
-```
-
 ### Use Previous Notice and Subscribe to Future Notices 
 
 ```js
@@ -114,13 +104,15 @@ HOW TO USE IT
 	board.settings.logOps = true;
 ```
 
-### Track Noticeboard Logs
+### Handle Noticeboard Logs
 
 ```js
 	
 	board.watch( 'log-entry', 'process-board-logs', function( message ){
 
-		console.log.apply( console, message.notice );
+		var entry = message.notice;
+
+		console.log.apply( console, entry );
 	});
 ```
 
