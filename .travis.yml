@@ -4,5 +4,5 @@ node_js:
   - 'iojs'
   - '0.12'
   - '0.10'
-after-success: 
+after_success:
   - npm run lcov-to-coveralls
