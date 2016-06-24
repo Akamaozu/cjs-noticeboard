@@ -21,6 +21,21 @@ Overall Upgrade Safety is a 5 Point Rating System to indicate how safe the upgra
 **1/5**: **VERY RISKY!** So many changes I can't even guarantee APIs that shouldn't be affected are safe. I wouldn't even recommend you upgrade unless you know what you are doing, what I am doing and what the meaning of life is. 
 
 ---
+V. 0.0.5
+===
+---
+OVERALL UPGRADE SAFETY: 5/5
+---
+1. **`Noticeboard.settings.logOps` determines if Noticeboard logs internal operations to `log-entry`**
+2. **BUGFIX: Noticeboard now checks if callback exists before triggering it**
+
+**NOTES**
+-
+- **BUGFIX: Noticeboard now checks if callback exists before triggering it**
+	- It was fairly easy to create a situation where a watcher intended to be notified once was notified more than once. The first notification would unsubscribe the watcher before the subsequent calls, but there was no check in place to verify if the watcher still existed. As a result, Noticeboard could create an uncaught error by trying to execute the callback of a watcher that no longer exists. 
+	- Noticeboard now checks if the watcher is still subscribed before executing its callback.
+
+---
 V. 0.0.4
 ===
 ---
@@ -31,7 +46,7 @@ OVERALL UPGRADE SAFETY: 3/5
 **NOTES**
 -
 - **`Noticeboard.watch` throws error on attempted overwrite of existing watcher**
-	- Previously used to return false on attempted watcher overwrite, it now throws an `Error` to prevent silent fails or the need to check the return value of each use of `Noticeboard.watch`.  
+	- Previously used to return false on attempted watcher overwrite, it now throws an `Error` to prevent silent fails or the need to check the return value of each use of `Noticeboard.watch`.
 
 ---
 V. 0.0.3
