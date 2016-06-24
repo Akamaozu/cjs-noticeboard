@@ -22,10 +22,11 @@
   },
   "homepage": "https://github.com/Akamaozu/cjs-noticeboard",
   "scripts": {
-    "test": "mocha",
-    "test-coverage": "nyc node_modules/mocha/bin/_mocha"
+    "test": "nyc node_modules/mocha/bin/_mocha",
+    "lcov-to-coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "devDependencies": {
+    "coveralls": "^2.11.9",
     "mocha": "^2.5.3",
     "nyc": "^6.6.1"
   },
