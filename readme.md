@@ -168,11 +168,11 @@ Adds a **watcher** to the list of **callbacks** to execute when a **notice** is 
 - **Is a Function**
 - **Arguments**
 	- **notice**
-			- type: String
-			- required: true
+		- type: String
+		- required: true
 	- **watcher**
-			- type: String
-			- required: true
+		- type: String
+		- required: true
 	- **callback**
 		- type: Function	
 		- required: true
