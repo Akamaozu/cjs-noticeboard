@@ -442,14 +442,6 @@ describe('Noticeboard Test Suite', function(){
     beforeEach(function(){
 
       test_board = new Noticeboard({ logging: true, logOps: true });
-
-      // // drop all watchers
-      //   for(var watcher in test_board.watchers){
-
-      //     if( !test_board.watchers.hasOwnProperty(watcher) ){ continue; }
-
-      //     delete test_board.watchers[watcher];
-      //   }
     });
 
     it('"settings.logOps" determines if noticeboard operations send "log-entry" notices', function(done){
