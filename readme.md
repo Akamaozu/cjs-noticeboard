@@ -125,35 +125,39 @@ new Noticeboard(settings)
 
 Create a new **Noticeboard** Instance. Behavior can be configured with **settings**.
 
-- **settings**
-	- type: Object `{}`
-	- required: false
-	- props:
-		- **logging**
-			- type: Boolean (`true` or `false`)
-			- required: false
-			- desc: Determines if the Noticeboard will notify subscribers of `log-entry`.
-		- **logOps**
-			- type: Boolean (`true` or `false`)
-			- required: false
-			- desc: Determines if the Noticeboard will publish notices about its internal operations to `log-entry` watchers.
+- Is a Function
+- Arguments
+	- **settings**
+		- type: Object `{}`
+		- required: false
+		- props:
+			- **logging**
+				- type: Boolean (`true` or `false`)
+				- required: false
+				- desc: Determines if the Noticeboard will notify subscribers of `log-entry`.
+			- **logOps**
+				- type: Boolean (`true` or `false`)
+				- required: false
+				- desc: Determines if the Noticeboard will publish notices about its internal operations to `log-entry` watchers.
 
 Noticeboard.notify(notice, message, source)
 ---
 
 Triggers the callback in every watcher of the specified **notice**. If there is a non-null **message**, the notification will be cached. The **source** is for attribution / debugging purposes.
 
-- **notice**
-	- type: String
-	- required: true
-- **message**
-	- type: Any
-	- required: false
-	- gotchas: 
-		1. **notifications with a message will automatically be cached**.
-		2. **notifications without a message will not be cached**. 
-		3. **notifications with the message object `null` will not be cached**.
-- **source**
+- Is a Function
+- Arguments
+	- **notice**
+		- type: String
+		- required: true
+	- **message**
+		- type: Any
+		- required: false
+		- gotchas: 
+			1. **notifications with a message will automatically be cached**.
+			2. **notifications without a message will not be cached**. 
+			3. **notifications with the message object `null` will not be cached**.
+	- **source**
 	- type: String
 	- required: false
 
@@ -161,22 +165,24 @@ Noticeboard.watch(notice, watcher, callback, options)
 ---
 Adds a **watcher** to the list of **callbacks** to execute when a **notice** is sent out. The execution context and parameters of the callback can be modified via **options**.
 
-- **notice**
-	- type: String
-	- required: true
-- **watcher**
-	- type: String
-	- required: true
-- **callback**
-	- type: Function	
-	- required: true
-	- arguments passed: Object `{}`
-	- arguments props: 
-		- **notice**
-			- description: **message** passed from `Noticeboard.notify`
-		-  **watcher**
-			-  description: **message** passed from `Noticeboard.watch`
-- **options**
+- Is a Function
+- Arguments
+	- **notice**
+		- type: String
+		- required: true
+	- **watcher**
+		- type: String
+		- required: true
+	- **callback**
+		- type: Function	
+		- required: true
+		- arguments passed: Object `{}`
+		- arguments props: 
+			- **notice**
+				- description: **message** passed from `Noticeboard.notify`
+			-  **watcher**
+				-  description: **message** passed from `Noticeboard.watch`
+	- **options**
 	- type: Object `{}`
 	- required: false
 	- props:
@@ -199,10 +205,12 @@ Noticeboard.ignore(notice, watcher)
 ---
 Remove a **watcher** from the list of callbacks to execute when this **notice** is sent out.
 
-- **notice**
-	- type: String
-	- required: true
-- **watcher**
+- Is a Function
+- Arguments
+	- **notice**
+		- type: String
+		- required: true
+	- **watcher**
 	- type: String
 	- required: true
 
@@ -230,7 +238,10 @@ With the above watcher, the snippet below is now a superior version of `console.
 CONTACT ME
 ===
 
-Share all the solutions! Let's make JavaScript so much easier and less opinionated than it currently is. **Pull requests**, **emails** (uzo@designbymobius.ca), **tweets** (@akamaozu) and even **carrier pigeons** (good luck with though) accepted. 
+- **Pull requests** 
+- **email**: uzo@designbymobius.ca
+- **twitter**: @akamaozu 
+- **carrier pigeons** 
 
 **Hop on the Noticeboard Train!**
 
