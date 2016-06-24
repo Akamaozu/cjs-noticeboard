@@ -120,6 +120,69 @@ describe('Noticeboard Test Suite', function(){
       assert.equal( overwrote_watcher, false, 'previous watcher was overwritten');
     });
 
+    it('"watch" will return false if notice id is not a string', function(){
+
+      var result;
+
+      result = test_board.watch(1, 'watcher-id', function(){});
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though notice id is a number');
+
+      result = test_board.watch([], 'watcher-id', function(){});
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though notice id is an array');
+
+      result = test_board.watch({}, 'watcher-id', function(){});
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though notice id is an object');
+
+      result = test_board.watch(null, 'watcher-id', function(){});
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though notice id is null');
+    });
+
+    it('"watch" will return false if watcher id is not a string', function(){
+
+      var result;
+
+      result = test_board.watch('notice-id', 1, function(){});
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though watcher id is a number');
+
+      result = test_board.watch('notice-id', [], function(){});
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though watcher id is an array');
+
+      result = test_board.watch('notice-id', {}, function(){});
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though watcher id is an object');
+
+      result = test_board.watch('notice-id', null, function(){});
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though watcher id is null');
+    });
+
+    it('"watch" will return false if callback is not a function', function(){
+
+      var result;
+
+      result = test_board.watch('notice-id', 'watcher-id', 1);
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though callback is a number');
+
+      result = test_board.watch('notice-id', 'watcher-id', []);
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though callback is an array');
+
+      result = test_board.watch('notice-id', 'watcher-id', {});
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though callback is an object');
+
+      result = test_board.watch('notice-id', 'watcher-id', null);
+
+      assert.equal( result, false, 'Watcher sucessfully started watching though callback is null');
+    });
+
     it('"notify" triggers a watcher\'s callback', function(done){
 
       var notice, watcher, message, 
@@ -160,6 +223,27 @@ describe('Noticeboard Test Suite', function(){
       });
 
       test_board.notify(notice, message);
+    });
+
+    it('"notify" will return false if notice id is not a string', function(){
+
+      var result;
+
+      result = test_board.notify(1, 'watcher-id');
+
+      assert.equal( result, false, 'Notify sucessful even though notice id is a number');
+
+      result = test_board.notify([], 'watcher-id');
+
+      assert.equal( result, false, 'Notify sucessful even though notice id is an array');
+
+      result = test_board.notify({}, 'watcher-id');
+
+      assert.equal( result, false, 'Notify sucessful even though notice id is an object');
+
+      result = test_board.notify(null, 'watcher-id');
+
+      assert.equal( result, false, 'Notify sucessful even though notice id is null');
     });
 
     it('"watch" triggers callback if useCache is true and cache exists', function(done){
@@ -227,7 +311,62 @@ describe('Noticeboard Test Suite', function(){
 
       watcher_list = test_board.watchers[notice];
       assert.equal(typeof watcher_list[watcher] === "undefined", true, 'watcher hasn\'t been removed from watcher list');
-    });    
+    });
+
+    it('"ignore" returns false if watcher does not exist', function(){
+
+      var notice, watcher,
+          watcher_removed;
+
+          notice = 'non-existent-notice';
+          watcher = 'test-suite';
+
+      watcher_removed = test_board.ignore(notice, watcher);
+
+      assert.equal(watcher_removed, false, 'returned true even though watcher did not exist prior to execution');
+    });
+
+    it('"ignore" will return false if notice id is not a string', function(){
+
+      var result;
+
+      result = test_board.ignore(1, 'watcher-id');
+
+      assert.equal( result, false, 'Ignore sucessful even though notice id is a number');
+
+      result = test_board.ignore([], 'watcher-id');
+
+      assert.equal( result, false, 'Ignore sucessful even though notice id is an array');
+
+      result = test_board.ignore({}, 'watcher-id');
+
+      assert.equal( result, false, 'Ignore sucessful even though notice id is an object');
+
+      result = test_board.ignore(null, 'watcher-id');
+
+      assert.equal( result, false, 'Ignore sucessful even though notice id is null');
+    });
+
+    it('"ignore" will return false if watcher id is not a string', function(){
+
+      var result;
+
+      result = test_board.ignore('notice-id', 1);
+
+      assert.equal( result, false, 'Ignore sucessful even though watcher id is a number');
+
+      result = test_board.ignore('notice-id', []);
+
+      assert.equal( result, false, 'Ignore sucessful even though watcher id is an array');
+
+      result = test_board.ignore('notice-id', {});
+
+      assert.equal( result, false, 'Ignore sucessful even though watcher id is an object');
+
+      result = test_board.ignore('notice-id', null);
+
+      assert.equal( result, false, 'Ignore sucessful even though watcher id is null');
+    });
 
     it('"once" ignores a notice after its callback has been fired', function(done){
 
@@ -302,13 +441,15 @@ describe('Noticeboard Test Suite', function(){
 
     beforeEach(function(){
 
-      // drop all watchers
-        for(var watcher in test_board.watchers){
+      test_board = new Noticeboard({ logging: true, logOps: true });
 
-          if( !test_board.watchers.hasOwnProperty(watcher) ){ continue; }
+      // // drop all watchers
+      //   for(var watcher in test_board.watchers){
 
-          delete test_board.watchers[watcher];
-      }
+      //     if( !test_board.watchers.hasOwnProperty(watcher) ){ continue; }
+
+      //     delete test_board.watchers[watcher];
+      //   }
     });
 
     it('"settings.logOps" determines if noticeboard operations send "log-entry" notices', function(done){

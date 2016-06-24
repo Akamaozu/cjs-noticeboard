@@ -85,7 +85,7 @@ module.exports = function(){
             isLoggingOps = _self.settings.logOps;
 
           // if the subscription list DNE or watcher isn't on the list, exit
-            if( !_self.watchers[notice] || !_self.watchers[notice][watcher] ){ return; }
+            if( !_self.watchers[notice] || !_self.watchers[notice][watcher] ){ return false; }
           
           // ignore
             delete _self.watchers[notice][watcher];
