@@ -2,7 +2,7 @@
 CJS-NOTICEBOARD 
 ===============
 ---
-[![Build Status](https://travis-ci.org/Akamaozu/cjs-noticeboard.svg?branch=master)](https://travis-ci.org/Akamaozu/cjs-noticeboard)
+[![Build Status](https://travis-ci.org/Akamaozu/cjs-noticeboard.svg?branch=master)](https://travis-ci.org/Akamaozu/cjs-noticeboard)[![Coverage Status](https://coveralls.io/repos/github/Akamaozu/cjs-noticeboard/badge.svg?branch=master)](https://coveralls.io/github/Akamaozu/cjs-noticeboard?branch=master)
 
 WHAT IS A NOTICEBOARD?
 =
