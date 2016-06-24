@@ -22,10 +22,12 @@
   },
   "homepage": "https://github.com/Akamaozu/cjs-noticeboard",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test-coverage": "nyc node_modules/mocha/bin/_mocha"
   },
   "devDependencies": {
-    "mocha": "^2.0.1"
+    "mocha": "^2.5.3",
+    "nyc": "^6.6.1"
   },
   "dependencies": {
     "merge-objects": "^1.0.5"
