@@ -125,8 +125,8 @@ new Noticeboard(settings)
 
 Create a new **Noticeboard** Instance. Behavior can be configured with **settings**.
 
-- Is a Function
-- Arguments
+- **Is a Function**
+- **Arguments**
 	- **settings**
 		- type: Object `{}`
 		- required: false
@@ -145,8 +145,8 @@ Noticeboard.notify(notice, message, source)
 
 Triggers the callback in every watcher of the specified **notice**. If there is a non-null **message**, the notification will be cached. The **source** is for attribution / debugging purposes.
 
-- Is a Function
-- Arguments
+- **Is a Function**
+- **Arguments**
 	- **notice**
 		- type: String
 		- required: true
@@ -165,14 +165,14 @@ Noticeboard.watch(notice, watcher, callback, options)
 ---
 Adds a **watcher** to the list of **callbacks** to execute when a **notice** is sent out. The execution context and parameters of the callback can be modified via **options**.
 
-- Is a Function
-- Arguments
+- **Is a Function**
+- **Arguments**
 	- **notice**
-		- type: String
-		- required: true
+			- type: String
+			- required: true
 	- **watcher**
-		- type: String
-		- required: true
+			- type: String
+			- required: true
 	- **callback**
 		- type: Function	
 		- required: true
@@ -183,9 +183,9 @@ Adds a **watcher** to the list of **callbacks** to execute when a **notice** is 
 			-  **watcher**
 				-  description: **message** passed from `Noticeboard.watch`
 	- **options**
-	- type: Object `{}`
-	- required: false
-	- props:
+		- type: Object `{}`
+		- required: false
+		- props:
 		- **message**
 			- type: Any
 			- required: false
@@ -205,8 +205,8 @@ Noticeboard.ignore(notice, watcher)
 ---
 Remove a **watcher** from the list of callbacks to execute when this **notice** is sent out.
 
-- Is a Function
-- Arguments
+- **Is a Function**
+- **Arguments**
 	- **notice**
 		- type: String
 		- required: true
