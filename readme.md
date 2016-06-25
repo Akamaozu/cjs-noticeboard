@@ -125,94 +125,94 @@ new Noticeboard(settings)
 
 Create a new **Noticeboard** Instance. Behavior can be configured with **settings**.
 
-- **Is a Function**
-- **Arguments**
-	- **settings**
-		- type: Object `{}`
-		- required: false
-		- props:
-			- **logging**
-				- type: Boolean (`true` or `false`)
-				- required: false
-				- desc: Determines if the Noticeboard will notify subscribers of `log-entry`.
-			- **logOps**
-				- type: Boolean (`true` or `false`)
-				- required: false
-				- desc: Determines if the Noticeboard will publish notices about its internal operations to `log-entry` watchers.
+* **Is a Function**
+* **Arguments**
+	* **settings**
+		* type: Object `{}`
+		* required: false
+		* props:
+			* **logging**
+				* type: Boolean (`true` or `false`)
+				* required: false
+				* desc: Determines if the Noticeboard will notify subscribers of `log-entry`.
+			* **logOps**
+				* type: Boolean (`true` or `false`)
+				* required: false
+				* desc: Determines if the Noticeboard will publish notices about its internal operations to `log-entry` watchers.
 
 Noticeboard.notify(notice, message, source)
 ---
 
 Triggers the callback in every watcher of the specified **notice**. If there is a non-null **message**, the notification will be cached. The **source** is for attribution / debugging purposes.
 
-- **Is a Function**
-- **Arguments**
-	- **notice**
-		- type: String
-		- required: true
-	- **message**
-		- type: Any
-		- required: false
-		- gotchas: 
+* **Is a Function**
+* **Arguments**
+	* **notice**
+		* type: String
+		* required: true
+	* **message**
+		* type: Any
+		* required: false
+		* gotchas: 
 			1. **notifications with a message will automatically be cached**.
 			2. **notifications without a message will not be cached**. 
 			3. **notifications with the message object `null` will not be cached**.
-	- **source**
-	- type: String
-	- required: false
+	* **source**
+		* type: String
+		* required: false
 
 Noticeboard.watch(notice, watcher, callback, options)
 ---
 Adds a **watcher** to the list of **callbacks** to execute when a **notice** is sent out. The execution context and parameters of the callback can be modified via **options**.
 
-- **Is a Function**
-- **Arguments**
-	- **notice**
-		- type: String
-		- required: true
-	- **watcher**
-		- type: String
-		- required: true
-	- **callback**
-		- type: Function	
-		- required: true
-		- arguments passed: Object `{}`
-		- arguments props: 
-			- **notice**
-				- description: **message** passed from `Noticeboard.notify`
-			-  **watcher**
-				-  description: **message** passed from `Noticeboard.watch`
-	- **options**
-		- type: Object `{}`
-		- required: false
-		- props:
-		- **message**
-			- type: Any
-			- required: false
-			- description: Passed to callback on execution. accessible inside callback as arguments[0].watcher
+* **Is a Function**
+* **Arguments**
+	* **notice**
+		* type: String
+		* required: true
+	* **watcher**
+		* type: String
+		* required: true
+	* **callback**
+		* type: Function	
+		* required: true
+		* arguments passed: Object `{}`
+		* arguments props: 
+			* **notice**
+				* description: **message** passed from `Noticeboard.notify`
+			*  **watcher**
+				* description: **message** passed from `Noticeboard.watch`
+	* **options**
+		* type: Object `{}`
+		* required: false
+		* props:
+		* **message**
+			* type: Any
+			* required: false
+			* description: Passed to callback on execution. accessible inside callback as arguments[0].watcher
 
-		- **useCache**
-			- type: Boolean (`true` or `false`)
-			- required: false
-			- description: Set to true if its okay to autofire the callback if the notification has been previously cached
+		* **useCache**
+			* type: Boolean (`true` or `false`)
+			* required: false
+			* description: Set to true if its okay to autofire the callback if the notification has been previously cached
 
-		- **once**
-			- type: Boolean (`true` or `false`)
-			- required: false
-			- description: Set to true if you want this watcher to autoignore the notice immediately after its callback. 
+		* **once**
+			* type: Boolean (`true` or `false`)
+			* required: false
+			* description: Set to true if you want this watcher to autoignore the notice immediately after its callback. 
 
 Noticeboard.ignore(notice, watcher)
 ---
 Remove a **watcher** from the list of callbacks to execute when this **notice** is sent out.
 
-- **Is a Function**
-- **Arguments**
-	- **notice**
-		- type: String
-		- required: true
-	- **watcher**
-	- type: String
-	- required: true
+* **Is a Function**
+* **Arguments**
+	* **notice**
+		* type: String
+		* required: true
+	* **watcher**
+	* type: String
+	* required: true
 
 Noticeboard.once(notice, watcher, callback, options)
 ---
@@ -238,10 +238,10 @@ With the above watcher, the snippet below is now a superior version of `console.
 CONTACT ME
 ===
 
-- **Pull requests** 
-- **email**: uzo@designbymobius.ca
-- **twitter**: @akamaozu 
-- **carrier pigeons** 
+* **Pull Requests** 
+* **Email**: uzo@designbymobius.ca
+* **Twitter**: @akamaozu 
+* **Carrier Pigeons** 
 
 **Hop on the Noticeboard Train!**
 
