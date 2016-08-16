@@ -425,7 +425,6 @@ describe('Noticeboard Test Suite', function(){
 
     it('"log" sends its message to watchers of log-entry', function(done){
 
-      // once should trigger the callback due to autolog
       test_board.once('log-entry', 'test-suite', function(msg){
 
         var log_arguments = msg.notice;
@@ -434,6 +433,8 @@ describe('Noticeboard Test Suite', function(){
 
         assert.equal(log_arguments.length > 0, true, 'message received is not the same as log entry');
       });
+
+      test_board.log('hello test runner');
     });
   });
 
@@ -444,22 +445,22 @@ describe('Noticeboard Test Suite', function(){
       test_board = new Noticeboard({ logging: true, logOps: true });
     });
 
-    it('"settings.logOps" determines if noticeboard operations send "log-entry" notices', function(done){
+    it('"settings.logOps" determines if noticeboard operations send "ops-log-entry" notices', function(done){
 
       test_board.settings.logOps = false;
 
       var timeout_fired = false,
           logged_operation = false;
 
-      // once should trigger the callback due to autolog
-        test_board.once('log-entry', 'test-suite', function(msg){
+      // should automatically send an ops log entry because it creates a new watcher
+        test_board.once('ops-log-entry', 'test-suite', function(msg){
 
           logged_operation = true;
 
           assert.equal(timeout_fired, true, 'noticeboard operation logged before logOps was set to true');
         });
 
-      // timeout if log operation doesn't fire
+      // timeout if ops log operation doesn't fire
         setTimeout( function(){
 
           assert.equal(logged_operation, false, 'noticeboard operation was logged when logOps was set to false');
@@ -468,7 +469,7 @@ describe('Noticeboard Test Suite', function(){
 
           test_board.settings.logOps = true;
 
-          test_board.once('log-entry', 'end-test', function(){ done() });
+          test_board.once('ops-log-entry', 'end-test', function(){ done() });
 
         }, 888);
     });
