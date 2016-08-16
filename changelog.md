@@ -21,12 +21,31 @@ Overall Upgrade Safety is a 5 Point Rating System to indicate how safe the upgra
 **1/5**: **VERY RISKY!** So many changes I can't even guarantee APIs that shouldn't be affected are safe. I wouldn't even recommend you upgrade unless you know what you are doing, what I am doing and what the meaning of life is. 
 
 ---
+V. 0.0.7
+===
+---
+OVERALL UPGRADE SAFETY: 2/5
+---
+1. **Noticeboard interal operations moved from `log-entry` to `ops-log-entry`**
+2. **Removed "watcher processed notice" message**
+
+**NOTES**
+-
+- **Noticeboard interal operations moved from `log-entry` to `ops-log-entry`**
+	- I like the Noticeboard log feature and I like the Noticeboard operations log. Unfortunately, combining two nice things doesn't mean the result is something nicer than the sum of its parts. With a combined log + ops log, I get just the logs or just the ops log. Either I had both in the same place or one was not logging.
+	- Splitting them into their own entries means I can trivially get my logs in one place and operation logs elsewhere.
+	- What if you want the logs in the same place? DO NOT USE `noticeboard.log` TO COMBINE THE TWO. Set up additional watchers to send the log to the same destination. Don't do what I reflexively did by sending every operations entry to log with `noticeboard.log`, because using it will create an ops log entry, which will be sent to the log which in turn will create an ops log entry ...
+	- It was much safer having the two combined, but with great power comes great responsibility.
+- **Removed "watcher processed notice" message**
+	- Pointless. Information was already available in ops log, where it told you who received a notice.
+
+---
 V. 0.0.6
 ===
 ---
 OVERALL UPGRADE SAFETY: 5/5
 ---
-1. Code Coverage Tests Added
+1. **Code Coverage Tests Added**
 
 ---
 V. 0.0.5
