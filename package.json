@@ -1,6 +1,6 @@
 {
   "name": "cjs-noticeboard",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Self-Logging Pubsub with Built-In Cache",
   "main": "cjs-noticeboard.js",
   "repository": {
