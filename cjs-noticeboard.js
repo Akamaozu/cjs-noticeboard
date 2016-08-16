@@ -59,12 +59,12 @@ module.exports = function(){
 
               _self._notifyWatcher(watcher, notice, notifyWatcherStruct);
               
-              if( isLoggingOps ) _self.log("\n'" + notice.toUpperCase() + "' - " + "cache-hit\n" + '<- Source: ' + notice +  '-cache \n-> Notified: ' + watcher + "\n" );            
+              if( isLoggingOps ) _self.notify('ops-log-entry', "\n'" + notice.toUpperCase() + "' - " + "cache-hit\n" + '<- Source: ' + notice +  '-cache \n-> Notified: ' + watcher + "\n", 'noticeboard');            
             }
 
             else { 
 
-              if( isLoggingOps ) _self.log(' * ' + watcher  + ' started watching "' + notice.toUpperCase() + '"'); 
+              if( isLoggingOps ) _self.notify('ops-log-entry', ' * ' + watcher  + ' started watching "' + notice.toUpperCase() + '"', 'noticeboard'); 
             }
 
           return true;      
@@ -91,7 +91,7 @@ module.exports = function(){
             delete _self.watchers[notice][watcher];
           
           // update log
-            if( isLoggingOps ) _self.log(' * ' + watcher  + ' stopped watching "' + notice.toUpperCase() + '"');
+            if( isLoggingOps ) _self.notify('ops-log-entry', ' * ' + watcher  + ' stopped watching "' + notice.toUpperCase() + '"', 'noticeboard');
 
           return true;        
         },
@@ -111,7 +111,7 @@ module.exports = function(){
             watcherList = _self.watchers[notice] ? _self.watchers[notice] : createWatcherList();
             informedWatchers = [];
             hasCache = (typeof _self.cache[notice] !== "undefined" ? true : false);
-            isLogNotification = (notice === "log-entry");
+            isDoingOpsLog = (notice === "ops-log-entry");
             isLoggingOps = _self.settings.logOps;
           
           // process queue            
@@ -134,7 +134,7 @@ module.exports = function(){
             if(typeof message !== "undefined"){ _self.cache[notice] = message; }
           
           // update log 
-            if( isLoggingOps && !isLogNotification ){ _self.log("\n'" + notice.toUpperCase() + "'\n" + '<- Source: ' + source +  '\n-> Notified: ' + JSON.stringify(informedWatchers) + "\n" ); }
+            if( isLoggingOps && !isDoingOpsLog ){ _self.notify('ops-log-entry', "\n'" + notice.toUpperCase() + "'\n" + '<- Source: ' + source +  '\n-> Notified: ' + JSON.stringify(informedWatchers) + "\n", 'noticeboard'); }
 
           return true;
         },
@@ -158,7 +158,7 @@ module.exports = function(){
 
           var _self = this;
 
-          if(_self.settings.logging === true){ _self.notify('log-entry', arguments); }
+          if(_self.settings.logging === true){ _self.notify('log-entry', arguments, 'noticeboard.log'); }
         }, 
 
       // _notifyWatcher
@@ -175,9 +175,7 @@ module.exports = function(){
 
                 _self.watchers[notice][watcher]['callback']({'notice': message.noticeMessage, 'watcher': message.watcherMessage});
 
-                if(message.once){ _self.ignore(notice, watcher); }
-
-                if(_self.settings.logOps) _self.log('processed ' + notice + '.' + watcher );
+                if(message.once) _self.ignore(notice, watcher);
               } 
             }(notice, watcher, message, _self), 0 );                
         }
